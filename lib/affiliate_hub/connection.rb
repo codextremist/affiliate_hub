@@ -1,10 +1,12 @@
 module AffiliateHub
   class Connection
 
+    class HTTPError < StandardError; end
+
     attr_reader :settings
 
     include HTTParty
-    debug_output $stdout
+    debug_output $stdout if AffiliateHub::Settings.instance.debug_output
 
     class << self
 
@@ -32,6 +34,9 @@ module AffiliateHub
               endpoint.extend_uri(extended_uri)
 
               response = endpoint.call(request_params)
+
+              raise HTTPError, "\#{response.code} http error. Server response '\#{response.body}\'" if response.code != 200
+
               payload = endpoint.mapper ? endpoint.mapper.call(response.body) : response.body
 
               if block_given?

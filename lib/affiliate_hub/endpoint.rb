@@ -1,6 +1,6 @@
 module AffiliateHub
   class Endpoint
-      
+
     attr_accessor :name, :connection, :full_uri
     attr_writer   :mapper
 
